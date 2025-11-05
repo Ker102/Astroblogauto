@@ -131,10 +131,10 @@ const resolveStatusProperty = async () => {
   });
 
   const propertyEntries = Object.entries(database.properties ?? {});
-  const propertySummary = propertyEntries
-    .map(([key, value]) => `${key} (${value.type}, id: ${value.id})`)
-    .join(", ");
-  console.log("Notion database properties:", propertySummary);
+  const propertySummaryLines = propertyEntries.map(([key, value]) => {
+    return ` • ${key} (type: ${value.type}, id: ${value.id})`;
+  });
+  console.log("Notion database properties:\n" + propertySummaryLines.join("\n"));
 
   let matchedEntry = null;
 
