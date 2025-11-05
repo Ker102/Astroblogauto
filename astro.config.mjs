@@ -6,6 +6,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://ker102.github.io/Astroblog.github.io/',
+	site: 'https://ker102.github.io/Astroblogauto/',
 	integrations: [mdx(), sitemap()],
 });
