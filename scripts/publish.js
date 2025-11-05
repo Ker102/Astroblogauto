@@ -20,6 +20,8 @@ if (missingEnv.length > 0) {
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
+console.log("Notion publish script v20250223-1");
+
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
 const targetBranch = process.env.PUBLISH_BRANCH || "main";
@@ -30,6 +32,37 @@ const STATUS_PUBLISHED = "Published";
 const STATUS_PROPERTY_NAME = process.env.NOTION_STATUS_PROPERTY_NAME || "Status";
 
 let cachedStatusPropertyType;
+let supportsDatabasesQuery;
+
+const queryDatabase = async ({ database_id, filter, sorts, start_cursor, page_size }) => {
+  if (supportsDatabasesQuery === undefined) {
+    supportsDatabasesQuery = typeof notion.databases.query === "function";
+    if (!supportsDatabasesQuery) {
+      console.log("Falling back to notion.request for database queries (databases.query not available).");
+    }
+  }
+
+  if (supportsDatabasesQuery) {
+    return notion.databases.query({
+      database_id,
+      filter,
+      sorts,
+      start_cursor,
+      page_size,
+    });
+  }
+
+  return notion.request({
+    path: `databases/${database_id}/query`,
+    method: "POST",
+    body: {
+      filter,
+      sorts,
+      start_cursor,
+      page_size,
+    },
+  });
+};
 
 const slugify = (value) =>
   value
@@ -124,14 +157,11 @@ const buildStatusFilter = async () => {
 
 const queryReadyPages = async () => {
   const statusFilter = await buildStatusFilter();
-  const response = await notion.request({
-    path: `databases/${process.env.NOTION_DATABASE_ID}/query`,
-    method: "POST",
-    body: {
-      filter: {
-        property: STATUS_PROPERTY_NAME,
-        ...statusFilter,
-      },
+  const response = await queryDatabase({
+    database_id: process.env.NOTION_DATABASE_ID,
+    filter: {
+      property: STATUS_PROPERTY_NAME,
+      ...statusFilter,
     },
   });
 
