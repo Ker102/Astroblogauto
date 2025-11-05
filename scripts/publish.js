@@ -27,6 +27,9 @@ const blogRoot = "src/content/blog";
 
 const STATUS_READY = "Ready to Publish";
 const STATUS_PUBLISHED = "Published";
+const STATUS_PROPERTY_NAME = process.env.NOTION_STATUS_PROPERTY_NAME || "Status";
+
+let cachedStatusPropertyType;
 
 const slugify = (value) =>
   value
@@ -81,18 +84,58 @@ const getExistingFileSha = async (path) => {
   }
 };
 
-const queryReadyPages = async () => {
-  const pages = await notion.databases.query({
+const resolveStatusPropertyType = async () => {
+  if (cachedStatusPropertyType) {
+    return cachedStatusPropertyType;
+  }
+
+  const database = await notion.databases.retrieve({
     database_id: process.env.NOTION_DATABASE_ID,
-    filter: {
-      property: "Status",
-      status: {
+  });
+
+  const property = database.properties?.[STATUS_PROPERTY_NAME];
+  if (!property) {
+    throw new Error(
+      `Property "${STATUS_PROPERTY_NAME}" not found in Notion database ${process.env.NOTION_DATABASE_ID}`
+    );
+  }
+
+  cachedStatusPropertyType = property.type;
+  return cachedStatusPropertyType;
+};
+
+const buildStatusFilter = async () => {
+  const type = await resolveStatusPropertyType();
+
+  if (type === "select") {
+    return {
+      select: {
         equals: STATUS_READY,
+      },
+    };
+  }
+
+  return {
+    status: {
+      equals: STATUS_READY,
+    },
+  };
+};
+
+const queryReadyPages = async () => {
+  const statusFilter = await buildStatusFilter();
+  const response = await notion.request({
+    path: `databases/${process.env.NOTION_DATABASE_ID}/query`,
+    method: "POST",
+    body: {
+      filter: {
+        property: STATUS_PROPERTY_NAME,
+        ...statusFilter,
       },
     },
   });
 
-  return pages.results;
+  return response.results;
 };
 
 const convertPageToMarkdown = async (pageId) => {
@@ -124,7 +167,7 @@ const updatePageStatus = (pageId, statusType) =>
   notion.pages.update({
     page_id: pageId,
     properties: {
-      Status: getStatusUpdatePayload(statusType),
+      [STATUS_PROPERTY_NAME]: getStatusUpdatePayload(statusType),
     },
   });
 
@@ -147,7 +190,7 @@ const publishPost = async (page) => {
     tags = formatTags(tagsProperty.multi_select);
   }
 
-  const statusProperty = page.properties?.Status;
+  const statusProperty = page.properties?.[STATUS_PROPERTY_NAME];
   const markdownBody = await convertPageToMarkdown(pageId);
   const frontmatter = getFrontmatter({ title, date: dateValue, tags });
   const postContent = `${frontmatter}${markdownBody}\n`;
