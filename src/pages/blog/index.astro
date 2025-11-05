@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -10,78 +9,79 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const postsWithContent = await Promise.all(
+	posts.map(async (post) => {
+		const { Content } = await post.render();
+		return { ...post, Content };
+	}),
+);
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`${SITE_TITLE} — Blog`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				width: 960px;
+				width: min(960px, 100%);
+				margin: 0 auto;
+				padding: clamp(1.5rem, 4vw, 3rem);
 			}
-			ul {
+			.posts {
 				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
+				flex-direction: column;
+				gap: clamp(2.5rem, 6vw, 4rem);
 				margin: 0;
 				padding: 0;
 			}
-			ul li {
-				width: calc(50% - 1rem);
+			article {
+				background: rgba(var(--paper), 0.95);
+				border-radius: 32px;
+				padding: clamp(2rem, 6vw, 3.5rem);
+				box-shadow: var(--shadow);
+				border: 1px solid rgba(var(--gray), 0.12);
+				scroll-margin-top: 6.5rem;
 			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
+			article h2 {
+				margin: 0 0 0.75rem;
+				font-size: clamp(2rem, 3.2vw, 2.75rem);
 				color: rgb(var(--black));
-				line-height: 1;
 			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
+			.meta {
+				margin: 0 0 1.75rem;
+				color: rgba(var(--gray-dark), 0.8);
+				font-weight: 600;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				font-size: 0.85rem;
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
+			article :global(img) {
+				max-width: 100%;
+				border-radius: 18px;
+				box-shadow: var(--shadow);
 			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+			article :global(p + p) {
+				margin-top: 1.3rem;
+			}
+			article :global(h2),
+			article :global(h3),
+			article :global(h4) {
+				margin-top: 2.75rem;
+			}
+			article :global(a) {
+				color: var(--accent);
+				text-decoration: none;
+			}
+			article :global(a:hover) {
+				text-decoration: underline;
 			}
 			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+				main {
+					padding: clamp(1.5rem, 6vw, 2.5rem) clamp(1rem, 4vw, 1.5rem);
 				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
+				article {
+					padding: clamp(1.5rem, 8vw, 2.5rem);
 				}
 			}
 		</style>
@@ -89,24 +89,19 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+			<section class="posts">
+				{
+					postsWithContent.map(({ id, data, Content }) => (
+						<article id={id}>
+							<h2>{data.title}</h2>
+							<p class="meta">
+								<FormattedDate date={data.pubDate} />
+								{data.tags?.length ? ` · ${data.tags.join(', ')}` : ''}
+							</p>
+							<Content />
+						</article>
+					))
+				}
 			</section>
 		</main>
 		<Footer />
