@@ -29,7 +29,8 @@ const blogRoot = "src/content/blog";
 
 const STATUS_READY = "Ready to Publish";
 const STATUS_PUBLISHED = "Published";
-const STATUS_PROPERTY_NAME = process.env.NOTION_STATUS_PROPERTY_NAME || "Status";
+const STATUS_PROPERTY_NAME =
+  process.env.NOTION_STATUS_PROPERTY_NAME || "Status";
 
 let cachedStatusPropertyType;
 let supportsDatabasesQuery;
@@ -126,14 +127,25 @@ const resolveStatusPropertyType = async () => {
     database_id: process.env.NOTION_DATABASE_ID,
   });
 
+  const propertyEntries = Object.entries(database.properties ?? {});
+  console.log(
+    "Notion database properties:",
+    propertyEntries.map(([key, value]) => `${key} (${value.type})`).join(", ")
+  );
+
   const property = database.properties?.[STATUS_PROPERTY_NAME];
   if (!property) {
     throw new Error(
-      `Property "${STATUS_PROPERTY_NAME}" not found in Notion database ${process.env.NOTION_DATABASE_ID}`
+      `Property "${STATUS_PROPERTY_NAME}" not found in Notion database ${process.env.NOTION_DATABASE_ID}. Available keys: ${propertyEntries
+        .map(([key]) => key)
+        .join(", ")}`
     );
   }
 
   cachedStatusPropertyType = property.type;
+  console.log(
+    `Resolved status property "${STATUS_PROPERTY_NAME}" of type "${cachedStatusPropertyType}"`
+  );
   return cachedStatusPropertyType;
 };
 
