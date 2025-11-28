@@ -2,7 +2,6 @@
 title: 'Databases Explained: SQL, NoSQL, and Vector DBs'
 description: 'A comprehensive guide to understanding databases, from traditional SQL to modern Vector stores for AI, with visual explanations.'
 pubDate: 'Nov 27 2025'
-heroImage: '/blog-placeholder-2.jpg'
 ---
 
 In the world of software development, databases are the unsung heroes. They are the digital vaults where we store everything from user profiles to complex AI embeddings. But with so many types available—SQL, NoSQL, Vector—it can be overwhelming to choose the right one.
