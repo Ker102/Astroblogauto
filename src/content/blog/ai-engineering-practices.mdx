@@ -1,0 +1,62 @@
+---
+title: 'Mastering AI Engineering: From Theory to Production'
+description: 'A deep dive into advanced prompt engineering techniques (Few-Shot, Chain-of-Thought), API parameter tuning, and how I apply these patterns in my actual projects like ModelForge.'
+pubDate: 'Dec 11 2025'
+---
+
+I recently finished a deep dive course on AI Engineering, focusing on moving beyond simple "chat" interfaces to building robust, engineering-grade applications. It's been a game-changer. The transition from *using* LLMs to *engineering* them requires a shift in mindset—from "asking questions" to "designing systems."
+
+Here is how I’m applying these advanced concepts to my own projects, like **Kaelux-Automate** and **ModelForge**.
+
+## Under the Hood: Parameter Tuning
+
+One of the first things I learned is that default API settings are rarely optimal for complex logic. In my **ModelForge** project, I don't just call the endpoint; I tune the parameters to control the "creativity" vs. "determinism" trade-off.
+
+For example, when integrating the Gemini 2.0 Flash model, I explicitly set the `temperature` and `topP` values to ensure the model follows instructions without hallucinating wild geometry:
+
+```typescript
+// From ModelForge/lib/gemini.ts
+export async function generateGeminiResponse({
+  messages,
+  temperature = 0.4, // Lower temperature for more deterministic code generation
+  topP = 0.8,
+  // ...
+})
+```
+
+By lowering the temperature to `0.4`, I force the model to be more conservative, which is critical when generating Python scripts that must execute inside Blender without errors.
+
+## Advanced Prompt Engineering Patterns
+
+The course reinforced several patterns I had started using but now understand deeply.
+
+### 1. System Prompts & Context
+It's not enough to just send a user message. You need to set the "persona" and boundaries. In ModelForge, I build a dynamic system prompt that injects guidelines and tool definitions:
+
+```typescript
+// From ModelForge/lib/orchestration/prompts.ts
+export function buildSystemPrompt() {
+  return [REACT_GUIDELINES, TOOL_DESCRIPTIONS, FEW_SHOT_EXAMPLES].join("\n\n")
+}
+```
+
+This ensures the model knows *exactly* what tools it has (like `get_scene_info` or `execute_code`) and how to use them before it even sees the user's request.
+
+### 2. Chain-of-Thought (CoT) & ReAct
+One of the most powerful techniques is forcing the model to "think" before it acts. In my system prompts, I explicitly instruct the model to follow a **ReAct (Reason + Act)** loop:
+
+> "Thought: Reflect on the user's intent... Action: Invoke tool..."
+
+This imposes a "Chain of Thought" structure, preventing the model from jumping to incorrect conclusions.
+
+### 3. Few-Shot Learning
+Theory says "give examples," and practice proves it works. I tried 0-shot prompting for complex Blender scripts, and it failed often. By providing **Few-Shot examples**—actual snippet pairs of User Input -> Python Code—I significantly improved the reliability of the output.
+
+### 4. Self-Consistency
+A new technique I learned and am now experimenting with is **Self-Consistency**. Instead of taking the first answer, you prompt the model multiple times (generating multiple "chains of thought") and pick the most consistent answer. This is computationally more expensive but incredibly useful for high-stakes logic limits.
+
+## The Future: LangChain
+
+The natural next step is **LangChain**, which takes these manual patterns (Code Owners, System Prompts, Message History) and abstracts them into reusable chains. I've already started exploring this, but my hands-on work with raw API calls gave me the intuition to know *what* LangChain is actually doing under the hood.
+
+I highly recommend digging into these engineering practices. Don't just chat with the bot—build the system that controls it.
