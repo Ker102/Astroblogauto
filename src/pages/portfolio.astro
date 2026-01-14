@@ -124,7 +124,7 @@ import Footer from '../components/Footer.astro';
 				background: #fff;
 			}
 			/* CRITICAL FIX: Constrain image sizes strictly with high specificity */
-			.social-btn svg, .social-btn img { 
+			.social-btn svg { 
 				width: 18px !important; 
 				height: 18px !important; 
 				min-width: 18px; /* Prevent shrinking */
@@ -133,6 +133,12 @@ import Footer from '../components/Footer.astro';
 				object-fit: contain;
 				vertical-align: middle;
 				display: block; /* Remove inline spacing issues */
+			}
+			.social-btn img {
+				width: 18px !important;
+				height: 18px !important;
+				border-radius: 50%; /* Restore circular style if needed for kaelux logo */
+				display: inline-block; /* Revert to inline-block for proper alignment */
 			}
 			
 			/* Brand Colors - Colorful by default as requested */
@@ -222,6 +228,7 @@ import Footer from '../components/Footer.astro';
 			
 			/* Inline Icons */
 			.inline-icon {
+				display: inline-block; /* CRITICAL: Override global block display */
 				height: 1.1em;
 				width: auto;
 				vertical-align: -0.2em;

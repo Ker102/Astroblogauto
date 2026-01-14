@@ -2,387 +2,230 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import WorkflowTimeline from '../components/WorkflowTimeline';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-
-const notionDatabaseUrl = 'https://www.notion.so/'; // replace with real link if desired
-const repoUrl = 'https://github.com/Ker102/Astroblogauto';
-const actionsUrl = `${repoUrl}/actions`;
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`${SITE_TITLE} — Automated Publishing`} description={SITE_DESCRIPTION} />
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
+			/* Page-specific overrides */
 			body {
-				background: radial-gradient(circle at 0 0, rgba(var(--parchment), 0.4), transparent 45%),
-					radial-gradient(circle at 100% 20%, rgba(var(--accent-rgb), 0.08), transparent 55%),
-					linear-gradient(180deg, rgba(var(--paper), 0.95), rgba(var(--paper), 0.75));
+				/* Force Clean Theme on this page overrides default from global */
+				background-color: #f5f5f7; 
+				color: #1d1d1f;
 			}
-			main {
-				width: min(1040px, 100%);
-				margin: 0 auto;
-				padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 6vw, 4rem) 4rem;
+			
+			.hero-section {
+				min-height: 80vh;
 				display: flex;
 				flex-direction: column;
-				gap: clamp(2.5rem, 6vw, 4rem);
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				padding-top: 8rem; /* Account for fixed header */
+				padding-bottom: 4rem;
 			}
-			.hero {
+
+			.hero-title {
+				font-size: clamp(3rem, 6vw, 5rem);
+				font-weight: 800;
+				letter-spacing: -0.04em;
+				line-height: 1.05;
+				background: linear-gradient(to top, #999 0%, #000 100%);
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent; /* Essential for gradient to show */
+				margin-bottom: 1.5rem;
+				opacity: 0; /* Animation start state */
+				transform: translateY(20px);
+			}
+
+			.hero-subtitle {
+				font-size: clamp(1.1rem, 2vw, 1.35rem);
+				color: #666;
+				max-width: 640px;
+				margin: 0 auto 3rem;
+				line-height: 1.5;
+				font-weight: 450;
+				opacity: 0;
+				transform: translateY(20px);
+			}
+
+			/* iOS 28 Glass Cards Grid */
+			.glass-grid {
 				display: grid;
-				gap: clamp(1.5rem, 4vw, 2.5rem);
-				align-items: start;
-				background: rgba(var(--paper), 0.92);
-				border-radius: 42px;
-				padding: clamp(2rem, 6vw, 3.5rem);
-				box-shadow: var(--shadow);
-				border: 1px solid rgba(var(--gray), 0.1);
+				grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+				gap: 2rem;
+				width: 100%;
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 0 1rem;
 			}
-			.hero h1 {
-				margin: 0;
-				font-size: clamp(2.25rem, 4vw, 3.5rem);
-				color: rgb(var(--black));
-				line-height: 1.2;
-			}
-			.hero p {
-				margin: 0;
-				font-size: 1.05rem;
-				color: rgba(var(--gray-dark), 0.88);
-				line-height: 1.8;
-			}
-			.hero ul {
-				margin: 0;
-				padding-left: 1.25rem;
-				color: rgba(var(--gray-dark), 0.88);
-				line-height: 1.7;
-			}
-			.hero .cta-row {
+
+			.glass-card {
+				position: relative;
+				padding: 2.5rem;
+				border-radius: 40px; /* Hyper rounded */
+				background: rgba(255, 255, 255, 0.65);
+				backdrop-filter: blur(40px);
+				-webkit-backdrop-filter: blur(40px);
+				border: 1px solid rgba(255, 255, 255, 0.6);
+				box-shadow: 
+					0 10px 30px -10px rgba(0,0,0,0.05),
+					inset 0 0 0 1px rgba(255,255,255,0.5);
+				transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+				overflow: hidden;
 				display: flex;
-				flex-wrap: wrap;
-				gap: 0.75rem;
-				margin-top: 1.5rem;
+				flex-direction: column;
+				opacity: 0;
+				transform: translateY(30px);
+				text-decoration: none;
+				color: inherit;
 			}
-			.hero a.cta {
-				display: inline-flex;
+
+			.glass-card:hover {
+				transform: translateY(-8px) scale(1.01);
+				background: rgba(255, 255, 255, 0.85);
+				box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12);
+			}
+
+			.card-icon {
+				width: 56px;
+				height: 56px;
+				background: #fff;
+				border-radius: 18px;
+				display: grid;
+				place-items: center;
+				font-size: 1.5rem;
+				margin-bottom: 1.5rem;
+				box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+				color: #000;
+			}
+
+			.card-title {
+				font-size: 1.5rem;
+				font-weight: 700;
+				margin-bottom: 0.75rem;
+				letter-spacing: -0.02em;
+			}
+
+			.card-desc {
+				font-size: 1rem;
+				color: #666;
+				line-height: 1.5;
+				margin-bottom: 1.5rem;
+			}
+
+			.card-arrow {
+				margin-top: auto;
+				display: flex;
 				align-items: center;
 				gap: 0.5rem;
-				padding: 0.8rem 1.4rem;
-				border-radius: 999px;
-				background: rgb(var(--accent));
-				color: white;
-				text-decoration: none;
 				font-weight: 600;
-				transition: transform 120ms ease, box-shadow 120ms ease;
+				font-size: 0.95rem;
+				color: #0071e3; /* Apple Blue */
 			}
-			.hero a.cta.secondary {
-				background: rgba(var(--accent-rgb), 0.12);
-				color: var(--accent-dark);
+
+			/* Decorative background blobs */
+			.bg-blob {
+				position: fixed;
+				width: 600px;
+				height: 600px;
+				border-radius: 50%;
+				filter: blur(100px);
+				z-index: -1;
+				opacity: 0.4;
+				animation: float 20s infinite ease-in-out;
 			}
-			.hero a.cta:hover {
-				transform: translateY(-2px);
-				box-shadow: 0 16px 30px rgba(var(--accent-rgb), 0.25);
-			}
-			.quick-facts {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-				gap: clamp(1rem, 3vw, 1.75rem);
-			}
-			.fact-card {
-				background: rgba(var(--paper), 0.9);
-				border-radius: 28px;
-				padding: clamp(1.5rem, 4vw, 2rem);
-				box-shadow: var(--shadow);
-				border: 1px solid rgba(var(--gray), 0.08);
-			}
-			.fact-card h3 {
-				margin: 0 0 0.75rem;
-				font-size: 1.1rem;
-				color: rgb(var(--black));
-				display: flex;
-				align-items: center;
-				gap: 0.65rem;
-			}
-			.fact-card p,
-			.fact-card ul {
-				margin: 0;
-				color: rgba(var(--gray-dark), 0.85);
-				line-height: 1.7;
-			}
-			.fact-card ul {
-				margin-top: 0.5rem;
-				padding-left: 1.1rem;
-			}
-			.timeline-section {
-				background: rgba(var(--paper), 0.92);
-				border-radius: 42px;
-				padding: clamp(2rem, 5vw, 3.5rem);
-				box-shadow: var(--shadow);
-				border: 1px solid rgba(var(--gray), 0.12);
-			}
-			.timeline-section h2 {
-				margin: 0 0 1.25rem;
-				font-size: clamp(2rem, 3vw, 2.5rem);
-				color: rgb(var(--black));
-			}
-			.timeline-section > p {
-				margin: 0 0 2rem;
-				color: rgba(var(--gray-dark), 0.85);
-				max-width: 720px;
-				line-height: 1.8;
-			}
-			.timeline {
-				display: flex;
-				flex-direction: column;
-				gap: clamp(1.25rem, 4vw, 2rem);
-			}
-			.timeline-step {
-				display: grid;
-				grid-template-columns: auto 1fr;
-				gap: clamp(1rem, 3vw, 1.5rem);
-				align-items: start;
-			}
-			.timeline-marker {
-				position: relative;
-				display: grid;
-				place-items: center;
-			}
-			.timeline-marker span {
-				width: 48px;
-				height: 48px;
-				border-radius: 999px;
-				display: grid;
-				place-items: center;
-				font-size: 1.6rem;
-				background: rgba(var(--accent-rgb), 0.12);
-				color: var(--accent-dark);
-				box-shadow: inset 0 0 0 2px rgba(var(--accent-rgb), 0.25);
-			}
-			.timeline-line {
-				position: absolute;
-				top: 52px;
-				left: 50%;
-				width: 2px;
-				height: calc(100% - 52px);
-				background: rgba(var(--accent-rgb), 0.25);
-				transform: translateX(-50%);
-			}
-			.timeline-line[data-last='true'] {
-				display: none;
-			}
-			.timeline-card {
-				background: rgba(var(--paper), 0.98);
-				border-radius: 26px;
-				padding: clamp(1.25rem, 3vw, 2rem);
-				box-shadow: var(--shadow);
-				border: 1px solid rgba(var(--gray), 0.1);
-			}
-			.timeline-card h3 {
-				margin: 0 0 0.4rem;
-				font-size: 1.35rem;
-				color: rgb(var(--black));
-			}
-			.timeline-card .step-badge {
-				margin: 0 0 0.5rem;
-				font-weight: 600;
-				color: var(--accent-dark);
-				text-transform: uppercase;
-				letter-spacing: 0.12em;
-				font-size: 0.75rem;
-			}
-			.timeline-card .summary {
-				margin: 0 0 0.9rem;
-				color: rgba(var(--gray-dark), 0.85);
-			}
-			.timeline-card ul {
-				margin: 0;
-				padding-left: 1.1rem;
-				color: rgba(var(--gray-dark), 0.85);
-				line-height: 1.65;
-			}
-			.deep-dive {
-				display: grid;
-				gap: clamp(1.5rem, 4vw, 2.5rem);
-			}
-			.deep-dive h2 {
-				margin: 0;
-				font-size: clamp(2rem, 3.2vw, 2.5rem);
-				color: rgb(var(--black));
-			}
-			.deep-dive p {
-				margin: 0;
-				color: rgba(var(--gray-dark), 0.86);
-				line-height: 1.8;
-			}
-			.deep-dive .grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-				gap: clamp(1rem, 3vw, 1.75rem);
-			}
-			.deep-card {
-				background: rgba(var(--paper), 0.9);
-				border-radius: 28px;
-				padding: clamp(1.5rem, 4vw, 2rem);
-				border: 1px solid rgba(var(--gray), 0.08);
-				box-shadow: var(--shadow);
-			}
-			.deep-card h3 {
-				margin: 0 0 0.6rem;
-				color: rgb(var(--black));
-				font-size: 1.15rem;
-			}
-			.deep-card p,
-			.deep-card ul {
-				margin: 0;
-				color: rgba(var(--gray-dark), 0.85);
-				line-height: 1.7;
-			}
-			.deep-card ul {
-				margin-top: 0.5rem;
-				padding-left: 1.1rem;
-			}
-			#blog {
-				scroll-margin-top: 6rem;
-			}
-			@media (max-width: 640px) {
-				.timeline-step {
-					grid-template-columns: 1fr;
-				}
-				.timeline-marker {
-					display: none;
-				}
+			.blob-1 { background: #e0f2fe; top: -10%; left: -10%; }
+			.blob-2 { background: #f0fdf4; bottom: -10%; right: -10%; animation-delay: -10s; }
+
+			@keyframes float {
+				0%, 100% { transform: translate(0, 0); }
+				50% { transform: translate(30px, -30px); }
 			}
 		</style>
 	</head>
-	<body>
+	<body data-theme="clean">
 		<Header />
-		<main>
-			<section class="hero">
-				<h1>Automated Notion → GitHub Pages publishing</h1>
-				<p>
-					This blog runs on a frictionless pipeline: draft in Notion, mark the status as “Ready to
-					Publish”, and GitHub Actions handles the rest—conversion, commits, and deployment to
-					GitHub Pages—without touching a terminal.
-				</p>
-				<p>
-					The automation lets me stay focused on writing while guaranteeing every live article is
-					versioned in git, rendered with Astro, and synced back to Notion for perfect record keeping.
-				</p>
-				<div class="cta-row">
-					<a class="cta" href={actionsUrl} target="_blank" rel="noreferrer">
-						View GitHub Actions run logs
-					</a>
-					<a class="cta secondary" href={repoUrl} target="_blank" rel="noreferrer">
-						Browse the repository
-					</a>
-				</div>
-				<ul>
-					<li>
-						Notion is the single source of truth—no editing in markdown folders or CMS dashboards.
-					</li>
-					<li>
-						The publishing script enforces content rules (title, preview text, publish date, tags) so
-						every article renders consistently.
-					</li>
-					<li>
-						Deployment is fully automated with GitHub Pages; new commits instantly refresh the live
-						site.
-					</li>
-				</ul>
-			</section>
+		
+		<!-- Background Elements -->
+		<div class="bg-blob blob-1"></div>
+		<div class="bg-blob blob-2"></div>
 
-			<section class="quick-facts">
-				<article class="fact-card">
-					<h3>🗂️ Notion database design</h3>
-					<p>
-						The Notion database stores each story with rich text blocks and these schema fields:
-						<strong>Title</strong>, <strong>Preview Text</strong>, <strong>Publish Date</strong>,
-						<strong>Tags</strong>, and a <strong>Status</strong> column.
-					</p>
-					<p>
-						Only entries marked <em>Ready to Publish</em> are exported. The script refuses to publish
-						drafts missing required metadata.
-					</p>
-				</article>
-				<article class="fact-card">
-					<h3>⚙️ Actions that power it</h3>
-					<ul>
-						<li>
-							<strong>Publish from Notion</strong> runs every 5 minutes. It converts qualifying pages into
-							Markdown and commits them via Octokit.
-						</li>
-						<li>
-							<strong>Deploy to GitHub Pages</strong> builds the Astro site, uploads a Pages artifact, and
-							pushes it live.
-						</li>
-					</ul>
-				</article>
-				<article class="fact-card">
-					<h3>🧭 Traceable history</h3>
-					<p>
-						Each automated publish leaves behind a git commit, a GitHub Actions log, and a status change in
-						Notion. That makes it easy to audit when and how each story shipped.
-					</p>
-				</article>
-			</section>
+		<main class="hero-section">
+			<h1 class="hero-title">Technical Product<br />Studio & Blog</h1>
+			<p class="hero-subtitle">
+				Building agentic systems, robust automation, and minimalistic software. 
+				<br/>Documenting the engineering journey from zero to scale.
+			</p>
+			
+			<div class="glass-grid">
+				<!-- Blog Card -->
+				<a href="/blog" class="glass-card">
+					<div class="card-icon">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+					</div>
+					<div class="card-title">Technical Blog</div>
+					<div class="card-desc">Deep dives into AI Engineering, DevOps pipelines, and modern web infrastructure. Coding without fluff.</div>
+					<div class="card-arrow">Read Articles →</div>
+				</a>
 
-			<section id="blog" class="timeline-section">
-				<h2>The publishing lifecycle</h2>
-				<p>
-					From typing the first sentence to seeing it live takes five orchestrated steps. The timeline below
-					breaks down what the automation does for me at every stage.
-				</p>
-				<WorkflowTimeline />
-			</section>
+				<!-- Portfolio Card -->
+				<a href="/portfolio" class="glass-card">
+					<div class="card-icon">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+					</div>
+					<div class="card-title">Minimal Portfolio</div>
+					<div class="card-desc">Showcase of production-grade projects. Focusing on impact, technical complexity, and clean architecture.</div>
+					<div class="card-arrow">View Work →</div>
+				</a>
 
-			<section class="deep-dive">
-				<h2>What happens under the hood?</h2>
-				<p>
-					Each component in the stack has a well-defined job. Together they eliminate copy-pasting, ensure
-					content parity between Notion and Git, and keep deployment consistent.
-				</p>
-				<div class="grid">
-					<article class="deep-card">
-						<h3>Notion authoring</h3>
-						<p>
-							I draft directly in Notion where I can brainstorm, gather assets, and collaborate. Blocks
-							get exported as Markdown, and frontmatter is generated automatically.
-						</p>
-						<ul>
-							<li>Use headers, toggles, callouts—most block types map cleanly to Markdown.</li>
-							<li>
-								Keep the “Preview Text” short; it becomes the summary used on the blog listing and in
-								meta tags.
-							</li>
-						</ul>
-					</article>
-					<article class="deep-card">
-						<h3>Conversion script</h3>
-						<p>
-							`scripts/publish.js` calls the Notion API with the official SDK and converts blocks via
-							<code>notion-to-md</code>. It then builds frontmatter with title, description, publish dates,
-							and tags.
-						</p>
-						<ul>
-							<li>Files land in <code>src/content/blog/</code> ready for Astro Content Collections.</li>
-							<li>
-								After committing, it flips the Notion status to “Published” to avoid duplicate exports.
-							</li>
-						</ul>
-					</article>
-					<article class="deep-card">
-						<h3>Astro & GitHub Pages</h3>
-						<p>
-							Astro renders the blog with a cozy brown/beige theme. The deploy action bundles the static
-							site, uploads it with <code>actions/upload-pages-artifact</code>, and publishes via Pages.
-						</p>
-						<ul>
-							<li>Every commit is versioned. Rolling back is as easy as reverting a git SHA.</li>
-							<li>No servers to manage—Pages handles global static hosting automatically.</li>
-						</ul>
-					</article>
-				</div>
-			</section>
+				<!-- Open Source Card -->
+				<a href="https://github.com/ker102" target="_blank" class="glass-card">
+					<div class="card-icon">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+					</div>
+					<div class="card-title">Open Source</div>
+					<div class="card-desc">Active improvements to the developer ecosystem. Contributing tools, libraries, and resources.</div>
+					<div class="card-arrow">GitHub Profile →</div>
+				</a>
+			</div>
 		</main>
+		
 		<Footer />
+
+		<script>
+			import { animate, stagger } from "motion";
+			
+			// Set clean theme on body immediately
+			document.body.setAttribute('data-theme', 'clean');
+			
+			// Animate Hero Elements
+			animate(
+				".hero-title",
+				{ opacity: 1, transform: "translateY(0)" },
+				{ duration: 0.8, easing: [0.17, 0.55, 0.55, 1] }
+			);
+			
+			animate(
+				".hero-subtitle",
+				{ opacity: 1, transform: "translateY(0)" },
+				{ duration: 0.8, delay: 0.2, easing: [0.17, 0.55, 0.55, 1] }
+			);
+			
+			// Stagger Cards
+			animate(
+				".glass-card",
+				{ opacity: 1, transform: "translateY(0)" },
+				{ 
+					delay: stagger(0.15, { start: 0.4 }),
+					duration: 0.8,
+					easing: [0.17, 0.55, 0.55, 1]
+				}
+			);
+		</script>
 	</body>
 </html>
