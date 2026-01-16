@@ -5,14 +5,16 @@ import HeaderLink from './HeaderLink.astro';
 
 <header class="ios-header">
 	<div class="header-content">
-		<!-- Left: Branding -->
-		<a href="/" class="brand-link">
-			<span class="brand-logo">KJ</span>
-			<span class="brand-icon">
-				<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-			</span>
-			<span class="brand-tag">@ker102</span>
-		</a>
+		<!-- Left: Branding (KJ + GitHub Pill) -->
+		<div class="brand-group">
+			<a href="/" class="brand-logo-link">
+				<span class="brand-logo">KJ</span>
+			</a>
+			<a href="https://github.com/ker102" target="_blank" class="github-pill">
+				<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+				<span>@Ker102</span>
+			</a>
+		</div>
 
 		<!-- Center: Island Navigation -->
 		<nav class="nav-island">
@@ -61,54 +63,54 @@ import HeaderLink from './HeaderLink.astro';
 		justify-content: space-between;
 	}
 
-	/* Brand: Stronger, Bigger, Black */
-	/* Brand: Stronger, Bigger, Black */
-	.brand-link {
-		display: flex;
-		align-items: center; /* Changed from baseline to center for better icon alignment */
-		gap: 0.75rem; /* Increased gap slightly */
-		text-decoration: none;
-		margin-left: -0.5rem; /* Shift branding to the left */
-	}
-	
-	.brand-logo {
-		font-size: 2rem; /* Increased from 1.75rem to match "Big" look */
-		font-weight: 800;
-		letter-spacing: -0.04em;
-		
-		/* Silver/Metallic Gradient Style */
-		background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		text-shadow: 0px 1px 3px rgba(0,0,0,0.15);
-		filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
-	}
-	
-	.brand-icon {
+	/* Brand Group: KJ + GitHub Pill */
+	.brand-group {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		color: #555;
-		/* Removed margin-top adjustment */
-	}
-	
-	.brand-icon svg {
-		width: 28px; /* Explicitly sized larger */
-		height: 28px;
+		gap: 1rem;
+		margin-left: -2rem; /* Push even further left to clear sidebar */
 	}
 
-	.brand-tag {
-		font-size: 1.1rem; /* Slightly larger */
+	.brand-logo-link {
+		text-decoration: none;
+	}
+
+	.brand-logo {
+		font-size: 2rem;
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		/* Black to White Progressive Gradient (Top to Bottom) */
+		background: linear-gradient(180deg, #000 0%, #888 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+	}
+
+	/* GitHub Pill Button - Kaelux.dev Style */
+	.github-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: #1a1a1a;
+		border-radius: 999px;
+		color: #fff;
+		font-size: 0.9rem;
 		font-weight: 500;
-		color: #666;
-		transition: color 0.2s ease;
-		padding-top: 2px; /* Visual optical alignment */
-	}
-		transition: color 0.2s ease;
+		text-decoration: none;
+		transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+		border: 1px solid rgba(255, 255, 255, 0.1);
 	}
 
-	.brand-link:hover .brand-tag {
-		color: #000;
+	.github-pill:hover {
+		background: #333;
+		transform: translateY(-2px);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+
+	.github-pill svg {
+		flex-shrink: 0;
 	}
 
 	/* Nav Island: The "Apple Glass" Pill */
