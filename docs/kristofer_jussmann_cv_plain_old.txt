@@ -1,0 +1,123 @@
+KRISTOFER JUSSMANN
+Tallinn, Estonia | (+372) 53006315
+kristoferjussmann@gmail.com
+Website: Kaelux.dev/links | LinkedIn: linkedin.com/in/kristofer-jussmann-b8a398382
+GitHub: github.com/Ker102
+
+---
+
+PROFESSIONAL SUMMARY
+
+Ambitious IT professional with 5+ years of practical experience in Python development and a demonstrated passion for technology. Currently managing a diverse portfolio of 7 concurrent projects with strong expertise in Cloud Computing, AI Engineering, Networking, and Automation. Holds 4 IT certifications and Cambridge C1 English proficiency. Proven ability to balance technical excellence with continuous learning and strong project management across multiple concurrent initiatives.
+
+---
+
+WORK EXPERIENCE
+
+ESTONIAN DEFENCE FORCES – Võru, Estonia
+October 2024 – April 2025
+Military Service Completion
+• Completed mandatory military service while maintaining technical skill development
+• Acquired foundational skills in critical thinking, physical resilience, and operational effectiveness
+• Demonstrated discipline, teamwork, and ability to manage intense training environments
+
+---
+
+EDUCATION & CERTIFICATIONS
+
+HIGH SCHOOL DIPLOMA
+Jaan Poska Gümnaasium, Tartu, Estonia
+September 2021 – June 2024
+EQF Level 4
+
+PROFESSIONAL CERTIFICATIONS & CREDENTIALS
+
+• Docker Foundations Professional Certificate (Docker Inc.)
+  Proficient in containerizing applications using Dockerfiles, managing container lifecycles, and orchestrating multi-container environments with Docker Compose.
+  Credential: linkedin.com/learning/certificates/85657049348f953bde6a7c05ae49f872c3c6574d272b2145b2d13eaa6e4e0f28
+
+• GitHub Foundations Certificate (GH-900, Microsoft)
+  Credential: learn.microsoft.com/api/credentials/share/en-us/KristoferJussmann-1965/546128FC216F9437?sharingId=A7A24E7B351AE25D
+
+• Machine Learning with Python Professional Certificate (Anaconda)
+  Credential: linkedin.com/learning/certificates/3a1dc8acdc215681f876e0fbd9497ef0cd1dbbfe4d06fc8d80b620d84571691e
+
+• Microsoft Applied Skills: Get Started with Azure Management Tasks (Microsoft Learn)
+  Credential: learn.microsoft.com/en-us/users/kristoferjussmann-1965/credentials/10cb49227b1b4b7a
+
+• HTB Linux Fundamentals (Hack The Box Academy)
+  Achievement: academy.hackthebox.com/achievement/2162720/18
+
+• HTB Windows Fundamentals (Hack The Box Academy)
+  Achievement: academy.hackthebox.com/achievement/2162720/49
+
+TECHNICAL COURSEWORK & TRAINING
+
+• Python Programming I & II (Jaan Poska Gümnaasium)
+• Machine Learning Foundations (5+ years continuous learning)
+• Web Design Using WordPress (Jaan Poska Gümnaasium)
+• Raspberry Pi Foundations (Jaan Poska Gümnaasium)
+• Google Sheets Course (Jaan Poska Gümnaasium)
+
+---
+
+TECHNICAL SKILLS
+
+PROGRAMMING & SCRIPTING
+• Python (5+ years experience)
+• JavaScript
+• Bash Shell Scripting
+• Git & GitHub Project Management
+
+CLOUD & INFRASTRUCTURE
+• Microsoft Azure Management
+• Docker CLI & Docker Compose
+• Linux Administration (Ubuntu, Linux Mint)
+• Windows OS Administration
+• Remote Desktop Protocol (RDP)
+• Parrot Security OS
+
+SPECIALIZATIONS
+• AI Engineering & Integration
+• API Integrations
+• Cloud Computing
+• Network Administration
+• Automation & DevOps
+• Cybersecurity Fundamentals
+
+PROFESSIONAL CAPABILITIES
+• Managing multiple concurrent projects (7+ simultaneously)
+• Time management and multitasking
+• Continuous technical growth and self-directed learning
+• Application interface design
+• Operating system installation and configuration
+
+---
+
+LANGUAGE SKILLS
+
+ESTONIAN (Mother Tongue)
+Listening: Native | Reading: Native | Writing: Native | Speaking: Native
+
+ENGLISH (Professional Working Proficiency)
+Listening: C2 | Reading: C2 | Speaking: C1 | Written Interaction: C1 | Written Production: C1
+
+---
+
+CERTIFICATIONS & LICENSES
+
+• Drone Pilot A1/A3 License
+• Aerial Photography Certification
+• Cambridge C1 English Certificate
+
+---
+
+ADDITIONAL INFORMATION
+
+Personal Website: Kaelux.dev/links
+GitHub Portfolio: Active development work showcasing practical applications of technical skills
+Current Focus: AI Engineering, Cloud Infrastructure, Cybersecurity, and Automation Workflows
+
+---
+
+Date: December 2025
