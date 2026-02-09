@@ -7,7 +7,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://ker102.github.io/Astroblogauto/',
-	base: '/Astroblogauto',
+	site: 'https://astroblogauto.vercel.app', // Replace with custom domain when configured
 	integrations: [mdx(), react(), sitemap()],
 });
